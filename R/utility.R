@@ -229,7 +229,7 @@ get_telemetry_data <- function(fname, site, metadata, date_start, date_last_issu
   })
 
   timestamps <- seq(date_start, to = date_last_issue + lubridate::hours(metadata$lead_time + metadata$horizon - 1),
-                    by = paste(metadata$resolution, "hour"))
+                    by = paste(metadata$resolution*60, "min"))
 
   # If the final forecast extends past the available telemetry data,
   # buffer with NA's
@@ -350,7 +350,7 @@ valid_2_issue_index <- function(valid, metadata, ensemble, issue=NULL) {
 issue_2_valid_index <- function(issue, step, metadata, telemetry) {
   if (step < 1) stop("Step must be at least 1")
   lead_time <- ifelse(metadata$is_rolling, 0, metadata$lead_time)
-  which(issue + lubridate::hours(lead_time + (step-1)*metadata$resolution)==
+  which(issue + lubridate::minutes((metadata$lead_time + (step - 1)*metadata$resolution)*60)==
           telemetry$validtime)
 }
 
